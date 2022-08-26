@@ -1,0 +1,22 @@
+---
+import Card from "./Card.astro";
+
+export interface Props {
+  items: any[];
+  currentTab: string | null;
+}
+
+const { items, currentTab } = Astro.props;
+---
+
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+  <div class="flex flex-col items-center justify-center space-y-2">
+    <p>Now Viewing</p>
+    <h1 class="bg-white rounded-full py-6 px-9 text-4xl text-black">
+      {currentTab && currentTab}
+    </h1>
+    <p>videos</p>
+  </div>
+
+  {items.map((item) => <Card item={item} />)}
+</div>

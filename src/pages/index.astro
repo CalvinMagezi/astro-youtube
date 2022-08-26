@@ -1,0 +1,43 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Card from "../components/Card.astro";
+import Sidebar from "../components/react/navigation/Sidebar.jsx";
+import Cards from "../components/Cards.astro";
+
+const url_string = Astro.url.searchParams;
+const currentTab = url_string.get("title") ? url_string.get("title") : "New";
+
+const API_KEY = import.meta.env.API_KEY;
+
+const options = {
+  method: "GET",
+  headers: {
+    "X-RapidAPI-Key": `${API_KEY}`,
+    "X-RapidAPI-Host": "youtube-v31.p.rapidapi.com",
+  },
+};
+
+const data = await fetch(
+  `https://youtube-v31.p.rapidapi.com/search?q=${currentTab}&part=snippet%2Cid&regionCode=US&maxResults=50&order=date`,
+  options
+)
+  .then((response) => {
+    return response.json();
+  })
+  .catch((err) => console.error(err));
+
+// console.log(data.items);
+---
+
+<Layout title="Astro Youtube Clone">
+  <main class="flex">
+    <Sidebar currentTab={currentTab} />
+    <div class="p-5">
+      <h1 class="text-3xl font-bold mb-2">
+        {currentTab}
+        <span class="text-red-600">videos</span>
+      </h1>
+      <Cards items={data.items} currentTab={currentTab} />
+    </div>
+  </main>
+</Layout>
