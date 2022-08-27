@@ -1,0 +1,81 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Card from "../components/Card.astro";
+import VideoDescription from "../components/react/VideoDescription.jsx";
+import { YouTube } from "@astro-community/astro-embed-youtube";
+import Cards from "../components/Cards.astro";
+
+const url_string = Astro.url.searchParams;
+const videoId = url_string.get("id") ? url_string.get("id") : "7ghhRHRP6t4";
+
+const API_KEY = import.meta.env.API_KEY;
+
+const options = {
+  method: "GET",
+  headers: {
+    "X-RapidAPI-Key": `${API_KEY}`,
+    "X-RapidAPI-Host": "youtube-v31.p.rapidapi.com",
+  },
+};
+
+const data = await fetch(
+  `https://youtube-v31.p.rapidapi.com/videos?part=contentDetails%2Csnippet%2Cstatistics&id=${videoId}`,
+  options
+)
+  .then((response) => {
+    return response.json();
+  })
+  .catch((err) => console.error(err));
+
+const related = await fetch(
+  `https://youtube-v31.p.rapidapi.com/search?relatedToVideoId=${videoId}&part=id%2Csnippet&type=video&maxResults=50`,
+  options
+)
+  .then((response) => {
+    return response.json();
+  })
+  .catch((err) => console.error(err));
+
+// console.log(related.items);
+---
+
+<Layout title={`Astro Youtube Clone Video ${data?.items[0]?.snippet?.title}`}>
+  <main class="p-10 max-w-7xl mx-auto">
+    <div class="w-full">
+      {
+        data?.items[0] && (
+          <div class="flex-col flex space-y-2 max-w-3xl mx-auto">
+            <div class="w-full mx-auto">
+              <YouTube id={data?.items[0]?.id} />
+            </div>
+            <h1 class="font-bold text-lg">{data.items[0].snippet.title}</h1>
+            <p>
+              Published:{" "}
+              {new Date(data.items[0].snippet.publishedAt).toLocaleDateString()}
+            </p>
+            <p>{data.items[0].snippet.channelTitle}</p>
+            <VideoDescription
+              description={data.items[0].snippet.description}
+              client:visible
+            />
+          </div>
+        )
+      }
+    </div>
+
+    <div>
+      <h1 class="text-3xl font-bold text-center w-full my-10">
+        Related Videos
+      </h1>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {
+          related?.items?.map((item: any) => (
+            <div class="w-full">
+              <YouTube id={item.id.videoId} />
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </main>
+</Layout>

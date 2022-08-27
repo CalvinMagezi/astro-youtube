@@ -1,5 +1,6 @@
 ---
 import Details from "./svelte/Details.svelte";
+import { Image } from "@astrojs/image/components";
 
 export interface Props {
   item: any;
@@ -8,10 +9,28 @@ export interface Props {
 const { item } = Astro.props;
 ---
 
-<div class="flex flex-col space-y-2">
+<a
+  href={`/video?id=${item.id.videoId}`}
+  class="bg-gradient-to-b overflow-hidden rounded-lg from-black via-black to-gray-700 shadow-black shadow-lg cursor-pointer hover:scale-105 transition duration-105"
+>
+  <Image
+    src={item.snippet.thumbnails?.high?.url}
+    width={400}
+    height={300}
+    format="webp"
+  />
   <Details>
     <p slot="title">
       {item.snippet.title}
     </p>
+    <p slot="subTitle" class="font-light">
+      {item.snippet.channelTitle}
+    </p>
+    <p slot="date" class="w-full">
+      {new Date(item.snippet.publishedAt).toLocaleDateString()}
+    </p>
+    <p slot="description" class="overflow-hidden">
+      {item.snippet.description}
+    </p>
   </Details>
-</div>
+</a>

@@ -14,7 +14,7 @@ import { MdFemale, MdMovie, MdSchool, MdSports } from "react-icons/md/index.js";
 
 function SidebarLink({ title, Icon, currentTab }) {
   return (
-    <a href={`/?title=${title}`}>
+    <a href={`/?title=${title}`} className="flex-shrink-0">
       <div
         className={`flex items-center space-x-6 py-3 px-10 rounded-full cursor-pointer hover:scale-105 ease-in-out transition duration-200 ${
           currentTab === title
@@ -32,7 +32,7 @@ function SidebarLink({ title, Icon, currentTab }) {
 
 function Sidebar({ currentTab }) {
   return (
-    <div className="flex flex-row md:flex-col md:space-y-4 px-4 border-r border-white">
+    <div className="flex overflow-x-scroll md:overflow-x-visible scrollbar-hide flex-row md:flex-col md:space-y-4 px-4 border-r border-white">
       <SidebarLink title="New" Icon={FaHome} currentTab={currentTab} />
       <SidebarLink title="Coding" Icon={FaFire} currentTab={currentTab} />
       <SidebarLink title="Astro JS" Icon={FaFire} currentTab={currentTab} />
